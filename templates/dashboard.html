@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="text-primary">Dashboard Admin</h2>
+  <a href="{{ url_for('registrar_tuctuc') }}" class="btn btn-turquesa">Registrar Tuc Tuc</a>
+</div>
+
+<table class="table table-hover table-custom">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in tuctucs %}
+    <tr>
+      <td>{{ t.nombre }}</td>
+      <td>
+        <a href="{{ url_for('qr', id=t.id) }}" class="btn btn-outline-primary btn-sm">Ver QR</a>
+        <a href="{{ url_for('registrar_viaje_admin', tuctuc_id=t.id) }}" class="btn btn-turquesa btn-sm">Registrar Viaje (Admin)</a>        
+        <a href="{{ url_for('ver_viajes', tuctuc_id=t.id) }}" class="btn btn-info btn-sm text-white">Ver Viajes</a>
+        <a href="{{ url_for('registrar_viaje', token=t.qr_token) }}" class="btn btn-outline-primary btn-sm">Registrar Viaje (QR)</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

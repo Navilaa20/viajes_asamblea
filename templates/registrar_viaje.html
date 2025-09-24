@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card card-custom p-4">
+      <h2 class="text-center mb-4 text-primary">Registrar Viaje para {{tuctuc.nombre}}</h2>
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Pasajeros</label>
+          <input type="number" class="form-control" name="pasajeros" min="1" max="6">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Observaciones</label>
+          <input name="observaciones" class="form-control" placeholder="Observaciones del viaje">
+        </div>
+        <div class="d-grid">
+          <button type="submit" class="btn btn-turquesa">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
