@@ -98,8 +98,9 @@ def registrar_viaje(token):
         obs = request.form.get("observaciones", "")
         max_pasajeros = 6 if current_user.role == "admin" else 3
 
-        if pasajeros > max_pasajeros:
-            flash(f"Máximo {max_pasajeros} pasajeros")
+        # Validar que sea entre 1 y max_pasajeros
+        if pasajeros < 1 or pasajeros > max_pasajeros:
+            flash(f"Cantidad inválida. Debe ser entre 1 y {max_pasajeros} pasajeros")
         else:
             viaje = Viaje(tuctuc_id=tuctuc.id, pasajeros=pasajeros, observaciones=obs)
             db.session.add(viaje)
