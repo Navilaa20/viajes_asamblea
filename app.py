@@ -36,7 +36,7 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
         user = User.query.filter_by(username=username).first()
-        if user and check_password_hash(user.password, password):
+        if user.password == password_ingresada:
             login_user(user)
             return redirect(url_for("dashboard"))
         flash("Usuario o contraseña incorrectos")
