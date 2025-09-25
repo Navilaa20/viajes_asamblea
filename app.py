@@ -117,7 +117,11 @@ def ver_viajes(tuctuc_id):
         return "Acceso denegado"
     tuctuc = TucTuc.query.get_or_404(tuctuc_id)
     viajes = Viaje.query.filter_by(tuctuc_id=tuctuc.id).all()
-    return render_template("ver_viajes.html", tuctuc=tuctuc, viajes=viajes)
+
+    precio_por_viaje = 10
+    total_a_pagar = len(viajes) * precio_por_viaje 
+
+    return render_template("ver_viajes.html", tuctuc=tuctuc, viajes=viajes, total_a_pagar=total_a_pagar)
 
 @app.route("/eliminar_viaje/<int:viaje_id>", methods=["POST"])
 @login_required
