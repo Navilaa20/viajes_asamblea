@@ -5,10 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import qrcode, io, uuid
 
 from models import db, User, TucTuc, Viaje
-db.create_all()
 
 app = Flask(__name__)
-app.secret_key = "Coopah_2024!"  # cámbiala en producción
+app.secret_key = "Coopah_2024!"  
 
 # Base de datos SQLite para pruebas
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:vPQEGCiFPAYdfKURWKFcQTwVPXLXMFCE@shortline.proxy.rlwy.net:24019/railway"
@@ -156,6 +155,7 @@ if __name__ == "__main__":
             admin = User(username="admin", password=generate_password_hash("1234"), role="admin")
             db.session.add(admin)
             db.session.commit()
+    app.run(debug=True)
 
 
 
