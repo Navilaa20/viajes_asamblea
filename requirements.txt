@@ -5,3 +5,5 @@ werkzeug
 qrcode[pil]
 gunicorn
 pymysql
+psycopg2-binary
+flask shell

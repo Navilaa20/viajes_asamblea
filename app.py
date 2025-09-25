@@ -5,12 +5,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import qrcode, io, uuid
 
 from models import db, User, TucTuc, Viaje
+db.create_all()
 
 app = Flask(__name__)
 app.secret_key = "Coopah_2024!"  # cámbiala en producción
 
 # Base de datos SQLite para pruebas
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://coopach:Coopah_2024!@localhost/coopach_db_transportes"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:vPQEGCiFPAYdfKURWKFcQTwVPXLXMFCE@shortline.proxy.rlwy.net:24019/railway"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
