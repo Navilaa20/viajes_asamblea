@@ -95,7 +95,7 @@ def registrar_viaje(token):
 
     if request.method == "POST":
         pasajeros_raw = request.form["pasajeros"]
-        max_pasajeros = 6 if current_user.role == "admin" else 3
+        max_pasajeros = 6 if current_user.role == "admin" else 4
 
         # Si seleccionaron "Más de 3"
         if pasajeros_raw == "otros":
