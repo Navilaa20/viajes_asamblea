@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, send_file
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.security import generate_password_hash, check_password_hash
 import qrcode, io, uuid
 
 from models import db, User, TucTuc, Viaje
@@ -33,10 +32,11 @@ def index():
 @app.route("/login", methods=["GET","POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = request.form.get("username")
+        password_ingresada = request.form.get("password")  # Definida correctamente
+
         user = User.query.filter_by(username=username).first()
-        if user.password == password_ingresada:
+        if user and user.password == password_ingresada:  # Texto plano
             login_user(user)
             return redirect(url_for("dashboard"))
         flash("Usuario o contraseña incorrectos")
@@ -144,21 +144,19 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
         
-        # Crear o actualizar usuario admin
+        # Crear o actualizar usuario admin en texto plano
         admin = User.query.filter_by(username="admin").first()
         if not admin:
-            # Crear admin si no existe
             admin = User(
-                username="admin", 
-                password=generate_password_hash("1234"),  # contraseña: 1234
+                username="admin",
+                password="1234",  # texto plano
                 role="admin"
             )
             db.session.add(admin)
             db.session.commit()
             print("Usuario admin creado correctamente")
         else:
-            # Actualizar contraseña en caso de que sea texto plano o incorrecta
-            admin.password = generate_password_hash("1234")
+            admin.password = "1234"  # actualizar contraseña en texto plano
             db.session.commit()
             print("Contraseña del admin actualizada correctamente")
             
