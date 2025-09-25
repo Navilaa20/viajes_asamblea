@@ -3,16 +3,23 @@
 <div class="row justify-content-center">
   <div class="col-md-6">
     <div class="card card-custom p-4">
-      <h2 class="text-center mb-4 text-primary">Registrar Viaje para {{tuctuc.nombre}}</h2>
+      <h2 class="text-center mb-4 text-primary">Registrar Viaje para {{ tuctuc.nombre }}</h2>
       <form method="post">
         <div class="mb-3">
-          <label class="form-label">Pasajeros</label>
-          <input type="number" class="form-control" name="pasajeros" min="1" max="6">
+          <label for="pasajeros" class="form-label">Cantidad de pasajeros</label>
+          <select name="pasajeros" id="pasajeros" class="form-select" required>
+            {% for i in range(1, 4) %}
+              <option value="{{ i }}">{{ i }}</option>
+            {% endfor %}
+            <option value="otros">Más de 3</option>
+          </select>
         </div>
-        <div class="mb-3">
-          <label class="form-label">Observaciones</label>
-          <input name="observaciones" class="form-control" placeholder="Observaciones del viaje">
+
+        <div class="mb-3" id="motivo-div" style="display:none;">
+          <label for="observaciones" class="form-label">Motivo de pasajeros extra</label>
+          <textarea name="observaciones" id="observaciones" class="form-control" placeholder="Indique por qué hay más de 3 pasajeros"></textarea>
         </div>
+
         <div class="d-grid">
           <button type="submit" class="btn btn-turquesa">Guardar</button>
         </div>
@@ -20,4 +27,17 @@
     </div>
   </div>
 </div>
+
+<script>
+  const pasajerosSelect = document.getElementById("pasajeros");
+  const motivoDiv = document.getElementById("motivo-div");
+
+  pasajerosSelect.addEventListener("change", function() {
+    if (this.value === "otros") {
+      motivoDiv.style.display = "block";
+    } else {
+      motivoDiv.style.display = "none";
+    }
+  });
+</script>
 {% endblock %}

@@ -94,11 +94,21 @@ def registrar_viaje(token):
     tuctuc = TucTuc.query.filter_by(qr_token=token).first_or_404()
 
     if request.method == "POST":
-        pasajeros = int(request.form["pasajeros"])
-        obs = request.form.get("observaciones", "")
+        pasajeros_raw = request.form["pasajeros"]
         max_pasajeros = 6 if current_user.role == "admin" else 3
 
-        # Validar que sea entre 1 y max_pasajeros
+        # Si seleccionaron "Más de 3"
+        if pasajeros_raw == "otros":
+            obs = request.form.get("observaciones", "").strip()
+            pasajeros = 4  # mínimo para "más de 3"
+            if not obs:
+                flash("Debe indicar el motivo para más de 3 pasajeros")
+                return redirect(url_for("registrar_viaje", token=token))
+        else:
+            pasajeros = int(pasajeros_raw)
+            obs = request.form.get("observaciones", "").strip()
+
+        # Validar máximo permitido
         if pasajeros < 1 or pasajeros > max_pasajeros:
             flash(f"Cantidad inválida. Debe ser entre 1 y {max_pasajeros} pasajeros")
         else:
