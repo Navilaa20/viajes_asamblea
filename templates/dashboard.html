@@ -18,7 +18,6 @@
       <td>{{ t.nombre }}</td>
       <td>
         <a href="{{ url_for('qr', id=t.id) }}" class="btn btn-outline-primary btn-sm">Ver QR</a>
-        <a href="{{ url_for('registrar_viaje_admin', tuctuc_id=t.id) }}" class="btn btn-turquesa btn-sm">Registrar Viaje (Admin)</a>        
         <a href="{{ url_for('ver_viajes', tuctuc_id=t.id) }}" class="btn btn-info btn-sm text-white">Ver Viajes</a>
         <a href="{{ url_for('registrar_viaje', token=t.qr_token) }}" class="btn btn-outline-primary btn-sm">Registrar Viaje (QR)</a>
       </td>

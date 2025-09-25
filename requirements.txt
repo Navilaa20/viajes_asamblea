@@ -4,5 +4,4 @@ flask_login
 werkzeug
 qrcode[pil]
 gunicorn
-pymysql
 psycopg2-binary

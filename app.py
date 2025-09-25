@@ -33,14 +33,17 @@ def index():
 def login():
     if request.method == "POST":
         username = request.form.get("username")
-        password_ingresada = request.form.get("password")  # Definida correctamente
+        password_ingresada = request.form.get("password")
 
         user = User.query.filter_by(username=username).first()
-        if user and user.password == password_ingresada:  # Texto plano
+        if user and user.password == password_ingresada:  # texto plano
             login_user(user)
-            return redirect(url_for("dashboard"))
+            # Redirigir a la página que estaba intentando visitar
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for("dashboard"))
         flash("Usuario o contraseña incorrectos")
     return render_template("login.html")
+
 
 @app.route("/logout")
 @login_required
@@ -88,15 +91,13 @@ def qr(id):
 @app.route("/viaje/<string:token>", methods=["GET","POST"])
 @login_required
 def registrar_viaje(token):
-    # Buscar el TucTuc por token; si no existe, 404
     tuctuc = TucTuc.query.filter_by(qr_token=token).first_or_404()
 
     if request.method == "POST":
         pasajeros = int(request.form["pasajeros"])
         obs = request.form.get("observaciones", "")
-        
-        # Limitar pasajeros según reglas
         max_pasajeros = 6 if current_user.role == "admin" else 3
+
         if pasajeros > max_pasajeros:
             flash(f"Máximo {max_pasajeros} pasajeros")
         else:
@@ -116,26 +117,6 @@ def ver_viajes(tuctuc_id):
     tuctuc = TucTuc.query.get_or_404(tuctuc_id)
     viajes = Viaje.query.filter_by(tuctuc_id=tuctuc.id).all()
     return render_template("ver_viajes.html", tuctuc=tuctuc, viajes=viajes)
-
-
-@app.route("/registrar_viaje_admin/<int:tuctuc_id>", methods=["GET","POST"])
-@login_required
-def registrar_viaje_admin(tuctuc_id):
-    if current_user.role != "admin":
-        return "Acceso denegado"
-    tuctuc = TucTuc.query.get_or_404(tuctuc_id)
-    if request.method == "POST":
-        pasajeros = int(request.form["pasajeros"])
-        obs = request.form.get("observaciones", "")
-        if pasajeros > 6:
-            flash("Máximo 6 pasajeros")
-        else:
-            viaje = Viaje(tuctuc_id=tuctuc.id, pasajeros=pasajeros, observaciones=obs)
-            db.session.add(viaje)
-            db.session.commit()
-            flash("Viaje registrado con éxito")
-            return redirect(url_for("dashboard"))
-    return render_template("registrar_viaje.html", tuctuc=tuctuc, qr=False)
 
 @app.route("/eliminar_viaje/<int:viaje_id>", methods=["POST"])
 @login_required
