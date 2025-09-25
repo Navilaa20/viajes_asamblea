@@ -76,7 +76,10 @@ def registrar_tuctuc():
 @login_required
 def qr(id):
     tuctuc = TucTuc.query.get_or_404(id)
-    img = qrcode.make(f"http://localhost:5000/viaje/{tuctuc.qr_token}")
+    # URL pública de tu app
+    qr_url = f"https://viajes-asamblea.onrender.com/viaje/{tuctuc.qr_token}"
+    
+    img = qrcode.make(qr_url)
     buf = io.BytesIO()
     img.save(buf, "PNG")
     buf.seek(0)
@@ -85,18 +88,24 @@ def qr(id):
 @app.route("/viaje/<string:token>", methods=["GET","POST"])
 @login_required
 def registrar_viaje(token):
+    # Buscar el TucTuc por token; si no existe, 404
     tuctuc = TucTuc.query.filter_by(qr_token=token).first_or_404()
+
     if request.method == "POST":
         pasajeros = int(request.form["pasajeros"])
         obs = request.form.get("observaciones", "")
-        if pasajeros > 3:
-            flash("Máximo 3 pasajeros (a menos que sean niños en piernas)")
+        
+        # Limitar pasajeros según reglas
+        max_pasajeros = 6 if current_user.role == "admin" else 3
+        if pasajeros > max_pasajeros:
+            flash(f"Máximo {max_pasajeros} pasajeros")
         else:
             viaje = Viaje(tuctuc_id=tuctuc.id, pasajeros=pasajeros, observaciones=obs)
             db.session.add(viaje)
             db.session.commit()
             flash("Viaje registrado con éxito")
             return redirect(url_for("registrar_viaje", token=token))
+
     return render_template("registrar_viaje.html", tuctuc=tuctuc, qr=True)
 
 @app.route("/viajes/<int:tuctuc_id>")
@@ -107,6 +116,7 @@ def ver_viajes(tuctuc_id):
     tuctuc = TucTuc.query.get_or_404(tuctuc_id)
     viajes = Viaje.query.filter_by(tuctuc_id=tuctuc.id).all()
     return render_template("ver_viajes.html", tuctuc=tuctuc, viajes=viajes)
+
 
 @app.route("/registrar_viaje_admin/<int:tuctuc_id>", methods=["GET","POST"])
 @login_required
