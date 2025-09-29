@@ -75,7 +75,7 @@ def registrar_tuctuc():
             flash("La placa ya está registrada")
             return redirect(url_for("registrar_tuctuc"))
 
-        nuevo = TucTuc(nombre=nombre, qr_token=token)
+        nuevo = TucTuc(nombre=nombre, placa=placa, qr_token=token)
         db.session.add(nuevo)
         db.session.commit()
         flash("Tuc Tuc registrado con éxito")
