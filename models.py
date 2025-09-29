@@ -12,6 +12,7 @@ class User(UserMixin, db.Model):
 class TucTuc(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
+    placa = db.Column(db.String(15), unique=True, nullable=False)
     qr_token = db.Column(db.String(200), unique=True, nullable=False)
 
 class Viaje(db.Model):

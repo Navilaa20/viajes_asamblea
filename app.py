@@ -67,7 +67,14 @@ def registrar_tuctuc():
         return "Acceso denegado"
     if request.method == "POST":
         nombre = request.form["nombre"]
+        placa = request.form["placa"].strip().upper()
         token = str(uuid.uuid4())
+
+        # Verificar si la placa ya existe
+        if TucTuc.query.filter_by(placa=placa).first():
+            flash("La placa ya está registrada")
+            return redirect(url_for("registrar_tuctuc"))
+
         nuevo = TucTuc(nombre=nombre, qr_token=token)
         db.session.add(nuevo)
         db.session.commit()
@@ -79,7 +86,7 @@ def registrar_tuctuc():
 @login_required
 def qr(id):
     tuctuc = TucTuc.query.get_or_404(id)
-    # URL pública de tu app
+    # URL pública para el QR
     qr_url = f"https://viajes-asamblea.onrender.com/viaje/{tuctuc.qr_token}"
     
     img = qrcode.make(qr_url)
